@@ -1,0 +1,6 @@
+<settings>
+    <setting id="main_url" type="text" label="Main URL of Soung365.cc" default="https://www.yourmusics.us" />    
+    <setting id="custom_directory" type="bool" label="Use costum directory" default="false" />
+    <setting id="music_dir" type="folder" label="Download directory :" default="" enable="!eq(-1,false)"/>
+    <setting id="extra_info" type="bool" label="Use Extra Info from theaudiodb.com" default="false" />
+</settings>
