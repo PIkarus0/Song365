@@ -1,5 +1,5 @@
 # Song365
-Ein KODI audio addon
+Ein KODI audio addon<br><br>
 Funktionen:
 1. Suchen nach Künstler
 2. Suchen nach Album
