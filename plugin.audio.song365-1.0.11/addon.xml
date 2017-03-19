@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="plugin.audio.song365" name="Song365" version="1.0.11" provider-name="PIkarus">
     <requires>
         <import addon="xbmc.python" version="2.1.0"/>
@@ -23,5 +23,6 @@
 - Populäre Alben
 - Populäre Titel
 	</description>
+	<website>https://pikarus0.github.io/Song365/</website>
     </extension>
 </addon>
