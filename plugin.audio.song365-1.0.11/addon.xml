@@ -12,16 +12,16 @@
     <extension point="xbmc.addon.metadata">
         <platform>all</platform>
         <language></language>
-        <summary>ermöglicht den Zugriff auf Song365.cc</summary>
+        <summary>ermoeglicht den Zugriff auf Song365.cc</summary>
         <description>Zugriff auf tausende von MP3 Dateien
-- Suche nach Künstler
+- Suche nach Kuenstler
 - Suche nach Album
 - Suche nach Titel in Album
 - Suche nach Titel
-- Künstler von A-Z
-- Populäre Künstler
-- Populäre Alben
-- Populäre Titel
+- Kuenstler von A-Z
+- Populaere Kuenstler
+- Populaere Alben
+- Populaere Titel
 	</description>
 	<website>https://pikarus0.github.io/Song365/</website>
     </extension>
