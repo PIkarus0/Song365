@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addons>
+    <addon id="repository.song365" name="Song365 Repository" version="1.0.0" provider-name="PIkarus">
+        <extension point="xbmc.addon.repository" name="Song365 Repository">
+            <provides>audio</provides>
+        </extension>
+        <extension point="xbmc.addon.metadata">
+            <summary>Song365 Repository</summary>
+            <description></description>
+            <disclaimer></disclaimer>
+            <source>https://github.com/PIkarus0/Song365/plugin.audio.song365</source>
+            <platform>all</platform>
+        </extension>
+    </addon>
+</addons>
+
