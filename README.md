@@ -13,3 +13,5 @@ Download von Liedern und Alben.
 2. Die Audiodateien werden mit den vorhandenen Informationen getagged
 3. Wenn vorhanden werden Albencover im Verzeichnis hinterlegt
 4. Die Vertzeichnisstruktur : Künstler / (Jahr) Album / Nummer - Künstler - Liedname
+
+Es können zusätzliche Informationen von TheAudioDB geladen werden.
