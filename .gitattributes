@@ -15,5 +15,3 @@
 *.PDF	 diff=astextplain
 *.rtf	 diff=astextplain
 *.RTF	 diff=astextplain
-*.zip filter=lfs diff=lfs merge=lfs -text
-*.md5 filter=lfs diff=lfs merge=lfs -text
