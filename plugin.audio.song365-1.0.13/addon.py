@@ -46,6 +46,8 @@ STRINGS = {
     'dialog10': 30039, 
     'dialog11': 30040, 
     'dialog12': 30041, 
+    'dialog13': 30042, 
+    'dialog14': 30043, 
 }
 
 
@@ -327,7 +329,7 @@ def get_popular_tracks():
         infoArtist = del_em(regex_from_to(infoAnker[1], '<a href=".*">', '</a>')).strip() 
         infoSong = del_em(regex_from_to(infoAnker[0], '<a href=".*">', '</a>')).strip() 
         infoPath = regex_from_to(infoAnker[0], '<a href="', '"').replace('/track', '/download')
-        pDialog.update (z, 'Get Track Data ', 'Artist : {0}'.format(infoArtist))
+        pDialog.update (z, _('dialog13'), _('dialog14').format(infoArtist))
         infoURL = catch_download( url + infoPath)
         if infoURL[-4:].lower()=='.mp3':
             items.append ({
