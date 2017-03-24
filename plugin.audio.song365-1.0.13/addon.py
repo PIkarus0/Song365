@@ -297,7 +297,7 @@ def get_ArtistAZ_List(char):
         for Data in items:
             x += 1
             z = int(float(x) / y * 100)
-            pDialog.update (z, _('dialog7'), _('dialog8').format(Data['info']['artist']))
+            pDialog.update (z, _('dialog7'), _('dialog8').format(Data['info']['artist'].decode('utf-8')))
             ExtraData = get_artistdata(Data['info']['artist'])
             if ExtraData:
                 if ExtraData['strArtistThumb']: items[i]['thumbnail'] = ExtraData['strArtistThumb']
@@ -357,7 +357,7 @@ def get_popular_tracks():
         for item in items:
             x += 1
             z = int(float(x) / y * 100)
-            pDialog.update (z, _('dialog7'), _('dialog8').format(item['info']['artist']))
+            pDialog.update (z, _('dialog7'), _('dialog8').format(item['info']['artist'].decode('utf-8')))
             Data = get_trackdata (item['info']['artist'],  item['info']['title'])
             if Data :
                 if Data['strAlbum']: items[i]['info']['album'] = Data['strAlbum']
@@ -412,7 +412,7 @@ def get_popular_albums():
         for item in items:
             x += 1
             z = int(float(x) / y * 100)
-            pDialog.update (z, _('dialog7'), _('dialog8').format(item['info']['album']))
+            pDialog.update (z, _('dialog7'), _('dialog8').format(item['info']['album'].decode('utf-8')))
             Data = get_albumdata_by_Name (item['info']['album'])
             if Data :
                 for ye in Data:
@@ -462,7 +462,7 @@ def get_popular_artists():
         for item in items:
             x += 1
             z = int(float(x) / y * 100)
-            pDialog.update (z, _('dialog7'), _('dialog8').format(item['info']['artist']))
+            pDialog.update (z, _('dialog7'), _('dialog8').format(item['info']['artist'].decode('utf-8')))
             ArtistData = get_artistdata (item['info']['artist'])
             if ArtistData:
                 if ArtistData['strArtistThumb']: items[i]['thumbnail'] = ArtistData['strArtistThumb']
