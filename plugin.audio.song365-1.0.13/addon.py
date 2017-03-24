@@ -21,17 +21,45 @@ noImage = xbmc.translatePath(os.path.join('special://home/addons/plugin.audio.so
 
 url = str(plugin.get_setting("main_url", unicode))
 
+STRINGS = {
+    'menue1': 30001,
+    'menue2': 30002,
+    'menue3': 30003,
+    'menue4': 30004,
+    'menue5': 30005,
+    'menue6': 30006,
+    'menue7': 30007,
+    'menue8': 30008,
+    'input1': 30020, 
+    'input2': 30021, 
+    'input3': 30022,
+    'inputtext': 30023, 
+    'dialog1': 30030, 
+    'dialog2': 30031, 
+    'dialog3': 30032, 
+    'dialog4': 30033, 
+    'dialog5': 30034, 
+    'dialog6': 30035, 
+    'dialog7': 30036, 
+    'dialog8': 30037, 
+    'dialog9': 30038, 
+    'dialog10': 30039, 
+    'dialog11': 30040, 
+    'dialog12': 30041, 
+}
+
+
 @plugin.route('/')
 def index():
     items = (
-        {'label': 'Search Artist', 'path': plugin.url_for('input_artist')}, 
-        {'label': 'Search Song',  'path': plugin.url_for('input_track')}, 
-        {'label': 'Search Song in Album',  'path': plugin.url_for('input_albumtrack')}, 
-        {'label': 'Search Album',  'path': plugin.url_for('input_album')}, 
-        {'label': 'Artist [A - Z]',  'path': plugin.url_for('artistAZ')}, 
-        {'label': 'Popular Artists',  'path': plugin.url_for('popular_artists')}, 
-        {'label': 'Popular Albums',  'path': plugin.url_for('popular_albums')}, 
-        {'label': 'Popular Tracks',  'path': plugin.url_for('popular_tracks')}, 
+        {'label':  _('menue1'), 'path': plugin.url_for('input_artist')}, 
+        {'label':  _('menue2'), 'path': plugin.url_for('input_track')}, 
+        {'label':  _('menue3'), 'path': plugin.url_for('input_albumtrack')}, 
+        {'label':  _('menue4'), 'path': plugin.url_for('input_album')}, 
+        {'label':  _('menue5'), 'path': plugin.url_for('artistAZ')}, 
+        {'label':  _('menue6'), 'path': plugin.url_for('popular_artists')}, 
+        {'label':  _('menue7'), 'path': plugin.url_for('popular_albums')}, 
+        {'label':  _('menue8'), 'path': plugin.url_for('popular_tracks')}, 
     )
     return items
 
@@ -41,12 +69,12 @@ def index():
 @plugin.route('/input/<label>', name='input_album',  options={'label': 'album'})
 def input (label) :
     if label == 'artist' :
-        t1 = 'Künstlers'
+        t1 = _('input1')
     elif label == 'album' :
-        t1 = 'Albums'
+        t1 = _('input2')
     else :
-        t1 = 'Liedes'
-    text = 'Bitte den Namen des {0} eingeben'.format (t1)
+        t1 = _('input3')
+    text =  _('inputtext').format (t1)
     ep = 'search_{0}_result'.format(label)
     query = plugin.keyboard(heading=(text))
     if query:
@@ -173,15 +201,15 @@ def copy_track (src, ziel, artist, genre, year, album, no, title):
     f = copy_file (src, ziel, fn )
     if f:
         write_mp3Tag(f, artist, year, album, no, '', title,  genre, '')
-        dialog('Track in {0} kopiert'.format(ziel))
+        dialog(_('dialog1').format(ziel))
     else:
-        dialog('Track wurde nicht gefunden')        
+        dialog(_('dialog2'))        
     return
 
 @plugin.route('/copy/album/<albenurl>')
 def copy_album (albenurl):
     pDialog = xbmcgui.DialogProgressBG()
-    pDialog.create('Download Album ', 'Get Data...')
+    pDialog.create(_('dialog3'), _('dialog4'))
     AlbumData = _get_album_title (albenurl)
     y = len(AlbumData['tracks'])
     x = 0
@@ -216,7 +244,7 @@ def copy_album (albenurl):
 
 def get_ArtistAZ_List(char):
     pDialog = xbmcgui.DialogProgressBG()
-    pDialog.create('Get Artist Data', 'Get Data...')
+    pDialog.create(_('dialog5'), _('dialog6'))
     if char == '#':
         Path = '/artist-digital.html'
     else:
@@ -267,7 +295,7 @@ def get_ArtistAZ_List(char):
         for Data in items:
             x += 1
             z = int(float(x) / y * 100)
-            pDialog.update (z, 'Get Extra Data ', 'Artist : {0}'.format(Data['info']['artist']))
+            pDialog.update (z, _('dialog7'), _('dialog8').format(Data['info']['artist']))
             ExtraData = get_artistdata(Data['info']['artist'])
             if ExtraData:
                 if ExtraData['strArtistThumb']: items[i]['thumbnail'] = ExtraData['strArtistThumb']
@@ -283,7 +311,7 @@ def get_ArtistAZ_List(char):
     
 def get_popular_tracks():
     pDialog = xbmcgui.DialogProgressBG()
-    pDialog.create('Get Track Data', 'Get Data...')
+    pDialog.create(_('dialog9'), _('dialog10'))
     content = open_url(url)
     __log(content)
     content = regex_from_to(content, '<div class="index-songs-artist">', '<div class="hot-artist">')
@@ -327,7 +355,7 @@ def get_popular_tracks():
         for item in items:
             x += 1
             z = int(float(x) / y * 100)
-            pDialog.update (z, 'Get Extra Data ', 'Artist : {0}'.format(item['info']['artist']))
+            pDialog.update (z, _('dialog7'), _('dialog8').format(item['info']['artist']))
             Data = get_trackdata (item['info']['artist'],  item['info']['title'])
             if Data :
                 if Data['strAlbum']: items[i]['info']['album'] = Data['strAlbum']
@@ -346,7 +374,7 @@ def get_popular_tracks():
 
 def get_popular_albums():
     pDialog = xbmcgui.DialogProgressBG()
-    pDialog.create('Album Data', 'Get Data...')
+    pDialog.create(_('dialog11'), _('dialog12'))
     content = open_url(url +'/album/week.html')
     content = regex_from_to(content, '<div class="albums">', '<div class="copyright">')
     List = regex_get_all(content, '<div class="item', ' </div>')
@@ -382,7 +410,7 @@ def get_popular_albums():
         for item in items:
             x += 1
             z = int(float(x) / y * 100)
-            pDialog.update (z, 'Get Extra Data ', 'Album : {0}'.format(item['info']['album']))
+            pDialog.update (z, _('dialog7'), _('dialog8').format(item['info']['album']))
             Data = get_albumdata_by_Name (item['info']['album'])
             if Data :
                 for ye in Data:
@@ -403,7 +431,7 @@ def get_popular_albums():
 
 def get_popular_artists():
     pDialog = xbmcgui.DialogProgressBG()
-    pDialog.create('Artist Data', 'Get Data...')
+    pDialog.create(_('dialog5'), _('dialog6'))
     content = open_url(url +'/artist.html')
     content = regex_from_to(content, '<div class="list">', '</div>')
     List = regex_get_all(content, '<a href="', '</a>')
@@ -432,7 +460,7 @@ def get_popular_artists():
         for item in items:
             x += 1
             z = int(float(x) / y * 100)
-            pDialog.update (z, 'Get Extra Data ', 'Artist : {0}'.format(item['info']['artist']))
+            pDialog.update (z, _('dialog7'), _('dialog8').format(item['info']['artist']))
             ArtistData = get_artistdata (item['info']['artist'])
             if ArtistData:
                 if ArtistData['strArtistThumb']: items[i]['thumbnail'] = ArtistData['strArtistThumb']
@@ -969,6 +997,13 @@ def get_cached(func, *args, **kwargs):
     def wrap(func_name, *args, **kwargs):
         return func(*args, **kwargs)
     return wrap(func.__name__, *args, **kwargs)
+
+def _(string_id):
+    if string_id in STRINGS:
+        return plugin.get_string(STRINGS[string_id])
+    else:
+        __log('String is missing: %s' % string_id)
+        return string_id
 
 if __name__ == '__main__':
     if usecostum:

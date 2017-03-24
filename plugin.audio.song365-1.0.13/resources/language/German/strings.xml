@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+  <!-- Plugin name -->
+  <string id="30000">Song365</string>
+
+  <!-- Main Meue name -->
+  <string id="30001">Suche Künstler</string>
+  <string id="30002">Suche Titel</string>
+  <string id="30003">Suche Titel in Album</string>
+  <string id="30004">Suche Album</string>
+  <string id="30005">Künstler [A - Z]</string>
+  <string id="30006">Populäre Künstler</string>
+  <string id="30007">Populäre Alben</string>
+  <string id="30008">Populäre Titel</string>
+
+  <string id="30020">Künstlers</string>
+  <string id="30021">Album</string>
+  <string id="30022">Titel</string>
+  <string id="30023">Bitte den Namen des {0} eingeben</string>
+  
+  <string id="30030">'Titel in {0} kopiert'</string>
+  <string id="30031">Titel wurde nicht gefunden</string>
+  <string id="30032">Download Album </string>
+  <string id="30033">lade Daten...</string>
+  <string id="30034">Künstler Daten</string>
+  <string id="30035">lade Daten...</string>
+  <string id="30036">lade extra Daten </string>
+  <string id="30037">Künstler : {0}</string>
+  <string id="30038">Titel Daten</string>
+  <string id="30039">lade Daten...</string>
+  <string id="30040">Album Daten</string>
+  <string id="30041">lade Daten...</string>
+  
+</strings>
