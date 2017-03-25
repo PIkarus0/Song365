@@ -16,6 +16,6 @@ Download von Liedern und Alben.
 
 Es können zusätzliche Informationen von TheAudioDB geladen werden.
 
-##Mindestanforderungen:
+## Mindestanforderungen:
 Windows: KODI 17.0
 Linux: Python 2.7.13
