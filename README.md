@@ -15,3 +15,7 @@ Download von Liedern und Alben.
 4. Die Vertzeichnisstruktur : Künstler / (Jahr) Album / Nummer - Künstler - Titel
 
 Es können zusätzliche Informationen von TheAudioDB geladen werden.
+
+##Mindestanforderungen:
+Windows: KODI 17.0
+Linux: Python 2.7.13
