@@ -204,7 +204,7 @@ def copy_track (src, ziel, artist, genre, year, album, no, title):
     f = copy_file (src, ziel.decode('utf8'), fn )
     if f:
         write_mp3Tag(f, artist, year, album, no, '', title,  genre, '')
-        dialog(_('Copyed Track {0}').format(ziel))
+        dialog(_('copied Track {0}').format(ziel))
     else:
         dialog(_('dialog2'))        
     return
