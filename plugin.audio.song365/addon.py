@@ -18,6 +18,7 @@ plugin = Plugin()
 usecostum = plugin.get_setting("custom_directory", bool)
 extra_info = plugin.get_setting("extra_info", bool)
 noImage = xbmc.translatePath(os.path.join('special://home/addons/plugin.audio.song365',  'resources/art/image_not_available.jpg'))
+noArtistImage = xbmc.translatePath(os.path.join('special://home/addons/plugin.audio.song365',  'resources/art/unknown_artist.jpg'))
 
 url = str(plugin.get_setting("main_url", unicode))
 
@@ -266,7 +267,7 @@ def get_ArtistAZ_List(char):
             items.append ({
                 'label': infoArtist, 
                 'path': plugin.url_for('search_artist_albums', artist= infoArtist, albenurl = infoPath ), 
-                'thumbnail': None, 
+                'thumbnail': noImage, 
                 'info': {
                     'artist': infoArtist, 
                     'genre': None, 
@@ -283,7 +284,7 @@ def get_ArtistAZ_List(char):
             items.append ({
                 'label': infoArtist, 
                 'path': plugin.url_for('search_artist_albums', artist= infoArtist, albenurl = infoPath ), 
-                'thumbnail': None, 
+                'thumbnail': noImage, 
                 'info': {
                     'artist': infoArtist, 
                     'genre': None, 
@@ -300,10 +301,13 @@ def get_ArtistAZ_List(char):
             pDialog.update (z, _('dialog7'), _('dialog8').format(Data['info']['artist'].decode('utf-8')))
             ExtraData = get_artistdata(Data['info']['artist'])
             if ExtraData:
-                if ExtraData['strArtistThumb']: items[i]['thumbnail'] = ExtraData['strArtistThumb']
-                if ExtraData['strBiographyDE']: items[i]['info']['comment'] = ExtraData['strBiographyDE']
+                items[i]['thumbnail'] = ExtraData.get('strArtistThumb',items[i]['thumbnail'])
+                if ExtraData.has_key('strBiographyDE'): items[i]['info']['comment'] = ExtraData['strBiographyDE']
                 else :
-                    if ExtraData['strBiographyEN']: items[i]['info']['comment'] = ExtraData['strBiographyEN']
+                    if ExtraData.has_key('strBiographyEN'): items[i]['info']['comment'] = ExtraData['strBiographyEN']
+#                if ExtraData['strBiographyDE']: items[i]['info']['comment'] = ExtraData['strBiographyDE']
+#                else :
+#                    if ExtraData['strBiographyEN']: items[i]['info']['comment'] = ExtraData['strBiographyEN']
                 if ExtraData['strGenre'] and len (ExtraData['strGenre']) >0 :
                     items[i]['info']['genre'] = ExtraData['strGenre']
                     items[i]['label'] = '{0} [{1}]'.format(Data['info']['artist'], ExtraData['strGenre'])
@@ -900,6 +904,7 @@ def __log(text):
 def del_quotes  (text):
     if text:
         text = text.replace ('&#039;', "'")
+        text = text.replace ('&#8216;', "'")
         text = text.replace ('&#8217;', "'")
         text = text.replace ('&quot;', '"')
         text = text.replace ('&#038;', '&')
