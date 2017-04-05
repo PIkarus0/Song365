@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <strings>
   <!-- Plugin name -->
   <string id="30000">Song365</string>
@@ -18,7 +18,7 @@
   <string id="30022">Titel</string>
   <string id="30023">Bitte den Namen des {0} eingeben</string>
   
-  <string id="30030">'Titel in {0} kopiert'</string>
+  <string id="30030">copied Track {0}</string>
   <string id="30031">Titel wurde nicht gefunden</string>
   <string id="30032">Download Album </string>
   <string id="30033">lade Daten...</string>

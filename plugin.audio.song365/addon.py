@@ -199,12 +199,12 @@ def search_album_title ( albenurl, albenname, thumb ):
 
 @plugin.route('/copy/track/<src>/<ziel>/<artist>/<genre>/<year>/<album>/<no>/<title>')
 def copy_track (src, ziel, artist, genre, year, album, no, title):
-    fn = '{0} - {1} - {2}.mp3'.format(no, artist, title)
+    fn = ('{0} - {1} - {2}.mp3'.format(no, artist, title)).decode('utf8')
     ziel = os.path.abspath(ziel)
-    f = copy_file (src, ziel, fn )
+    f = copy_file (src, ziel.decode('utf8'), fn )
     if f:
         write_mp3Tag(f, artist, year, album, no, '', title,  genre, '')
-        dialog(_('dialog1').format(ziel))
+        dialog(_('Copyed Track {0}').format(ziel))
     else:
         dialog(_('dialog2'))        
     return
@@ -218,7 +218,7 @@ def copy_album (albenurl):
     x = 0
     AlbumData['artist'] = forbidden_char(AlbumData['artist'])
     AlbumData['album'] = forbidden_char(AlbumData['album'])
-    d = dst + AlbumData['artist']+'/'+'('+AlbumData['year']+') '+AlbumData['album']
+    d = dst + str(AlbumData['artist']).decode('utf8') + '/' + '('+AlbumData['year']+') ' + AlbumData['album']
     adata = get_albumdata (AlbumData['album'],  AlbumData['artist'])
     if adata:
         cover = adata['strAlbumThumb']
@@ -238,8 +238,8 @@ def copy_album (albenurl):
             x += 1
             z = int(float(x) / y * 100)
             pDialog.update (z, 'Download Album - {0} '.format(AlbumData['album']), 'Copy : {0}. {1}'.format(data['no'], data['title'] ))
-            fn = '{0} - {1} - {2}.mp3'.format(data['no'], AlbumData['artist'] , data['title'])
-            fname = copy_file (data['path'], d, fn )
+            fn = '{0} - {1} - {2}.mp3'.format(data['no'], AlbumData['artist'].encode('utf8'), data['title'].encode('utf8'))
+            fname = copy_file (data['path'], d, fn.decode('utf8') )
             if fname:
                 mp3_tags(fname, AlbumData['artist'], AlbumData['year'], AlbumData['album'], data['no'], AlbumData['tracks'], data['title'],  AlbumData['genre'], AlbumData['comment'])
     pDialog.close()

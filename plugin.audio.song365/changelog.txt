@@ -4,4 +4,6 @@
     - Language support
 1.0.13a (05.04.2017)
     - Text support
+1.0.13b (05.04.2017)
+    - correct Downloadstrings, now support for дцья 
 
