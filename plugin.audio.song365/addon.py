@@ -3,7 +3,7 @@
 
 import re, urllib2
 from xbmcswift2 import Plugin, xbmcaddon, xbmcgui, xbmc
-import xbmcswift2
+#import xbmcswift2
 import requests
 import os
 import json
@@ -20,7 +20,8 @@ extra_info = plugin.get_setting("extra_info", bool)
 noImage = xbmc.translatePath(os.path.join('special://home/addons/plugin.audio.song365',  'resources/art/image_not_available.jpg'))
 noArtistImage = xbmc.translatePath(os.path.join('special://home/addons/plugin.audio.song365',  'resources/art/unknown_artist.jpg'))
 
-url = str(plugin.get_setting("main_url", unicode))
+#url = str(plugin.get_setting("main_url", unicode))
+url = plugin.get_setting("main_url")
 
 STRINGS = {
     'menue1': 30001,
@@ -199,12 +200,12 @@ def search_album_title ( albenurl, albenname, thumb ):
 
 @plugin.route('/copy/track/<src>/<ziel>/<artist>/<genre>/<year>/<album>/<no>/<title>')
 def copy_track (src, ziel, artist, genre, year, album, no, title):
-    fn = ('{0} - {1} - {2}.mp3'.format(no, artist, title)).decode('utf8')
-    ziel = os.path.abspath(ziel)
-    f = copy_file (src, ziel.decode('utf8'), fn )
+    fn = '{0} - {1} - {2}.mp3'.format(no, artist, title)
+    ziel = os.path.abspath(ziel).decode('utf8')
+    f = copy_file (src, ziel, fn )
     if f:
         write_mp3Tag(f, artist, year, album, no, '', title,  genre, '')
-        dialog(_('copied Track {0}').format(ziel))
+        dialog(_('dialog1').format(ziel.encode('utf8')))
     else:
         dialog(_('dialog2'))        
     return
@@ -218,16 +219,16 @@ def copy_album (albenurl):
     x = 0
     AlbumData['artist'] = forbidden_char(AlbumData['artist'])
     AlbumData['album'] = forbidden_char(AlbumData['album'])
-    d = dst + str(AlbumData['artist']).decode('utf8') + '/' + '('+AlbumData['year']+') ' + AlbumData['album']
+    d = os.path.join(dst, AlbumData['artist'].decode('utf8'), '('+AlbumData['year']+') ' + AlbumData['album'].decode('utf8'))
     adata = get_albumdata (AlbumData['album'],  AlbumData['artist'])
     if adata:
         cover = adata['strAlbumThumb']
         if adata['strGenre']:
             AlbumData['genre'] = adata['strGenre']
         if adata['strArtist']:
-            AlbumData['artist'] = adata['strArtist']
+            AlbumData['artist'] = adata['strArtist'].encode('utf8')
         if adata['strAlbum']:
-            AlbumData['album'] = adata['strAlbum']
+            AlbumData['album'] = adata['strAlbum'].encode('utf8')
         if adata['intYearReleased']:
             AlbumData['year'] = adata['intYearReleased']
         if cover:
@@ -238,8 +239,8 @@ def copy_album (albenurl):
             x += 1
             z = int(float(x) / y * 100)
             pDialog.update (z, 'Download Album - {0} '.format(AlbumData['album']), 'Copy : {0}. {1}'.format(data['no'], data['title'] ))
-            fn = '{0} - {1} - {2}.mp3'.format(data['no'], AlbumData['artist'].encode('utf8'), data['title'].encode('utf8'))
-            fname = copy_file (data['path'], d, fn.decode('utf8') )
+            fn = '{0} - {1} - {2}.mp3'.format(data['no'], AlbumData['artist'], data['title'])
+            fname = copy_file (data['path'], d, fn )
             if fname:
                 mp3_tags(fname, AlbumData['artist'], AlbumData['year'], AlbumData['album'], data['no'], AlbumData['tracks'], data['title'],  AlbumData['genre'], AlbumData['comment'])
     pDialog.close()
@@ -298,16 +299,16 @@ def get_ArtistAZ_List(char):
         for Data in items:
             x += 1
             z = int(float(x) / y * 100)
-            pDialog.update (z, _('dialog7'), _('dialog8').format(Data['info']['artist'].decode('utf-8')))
+            try:
+                pDialog.update (z, _('dialog7'), _('dialog8').format(Data['info']['artist']))                
+            except:
+                pDialog.update (z, _('dialog7'), _('dialog8').format(Data['info']['artist'].decode('utf-8')))
             ExtraData = get_artistdata(Data['info']['artist'])
             if ExtraData:
                 items[i]['thumbnail'] = ExtraData.get('strArtistThumb',items[i]['thumbnail'])
                 if ExtraData.has_key('strBiographyDE'): items[i]['info']['comment'] = ExtraData['strBiographyDE']
                 else :
                     if ExtraData.has_key('strBiographyEN'): items[i]['info']['comment'] = ExtraData['strBiographyEN']
-#                if ExtraData['strBiographyDE']: items[i]['info']['comment'] = ExtraData['strBiographyDE']
-#                else :
-#                    if ExtraData['strBiographyEN']: items[i]['info']['comment'] = ExtraData['strBiographyEN']
                 if ExtraData['strGenre'] and len (ExtraData['strGenre']) >0 :
                     items[i]['info']['genre'] = ExtraData['strGenre']
                     items[i]['label'] = '{0} [{1}]'.format(Data['info']['artist'], ExtraData['strGenre'])
@@ -319,10 +320,10 @@ def get_popular_tracks():
     pDialog = xbmcgui.DialogProgressBG()
     pDialog.create(_('dialog9'), _('dialog10'))
     content = open_url(url)
-    __log(content)
+#    __log(content)
     content = regex_from_to(content, '<div class="index-songs-artist">', '<div class="hot-artist">')
     List = regex_get_all(content, '<div class="item', '</div>')
-    __log(List)
+#    __log(List)
     items = []
     x = 0
     y = len(List)
@@ -507,7 +508,7 @@ def get_search_track ( search_string ) :
         infoAlbum = del_em(regex_from_to(infoAnker[2], '<a href=".*">', '</a>')).strip() 
         infoSongPath = regex_from_to(infoAnker[0], '<a href="', '"').replace ('/track', '/download')
 
-        dstTrack = dst+forbidden_char(infoArtist)+ '/' + forbidden_char(infoAlbum)
+        dstTrack = os.path.join(dst, forbidden_char(infoArtist.decode('utf8')), forbidden_char(infoAlbum.decode('utf8')))
 
         infoTrackPath = catch_download( url + infoSongPath)
         context_menu = []
@@ -644,7 +645,7 @@ def get_search_album_title ( albenurl, albenname, thumb ):
         AlbumData['thumb'] = t
     items = []
 
-    dstTrack = dst+forbidden_char(AlbumData['artist'])+'/'+'('+AlbumData['year']+') '+forbidden_char(AlbumData['album'])
+    dstTrack = os.path.join(dst, forbidden_char(AlbumData['artist']), '('+AlbumData['year']+') '+forbidden_char(AlbumData['album']))
     for data in AlbumData['tracks']:
         context_menu = []
         context_menu.append(('[COLOR lime]Download Track[/COLOR]',
@@ -693,9 +694,17 @@ def copy_file (src, ziel,  fname):
         __log('Kann URL nicht öffnen : {0}'.format(src))
     else:
         dump = file.raw
-        x = os.path.abspath(ziel + '/' + fname)
+        x = os.path.join(ziel , fname.decode('utf8'))
+#        __log(x.encode('utf8'))
+        x = os.path.abspath(x)
+#        __log(x.encode('utf8'))
         y = os.path.abspath(ziel)
-        distutils.dir_util.mkpath(y)
+#        __log(y.encode('utf8'))
+        try:
+            distutils.dir_util.mkpath(y)
+        except:
+            distutils.dir_util.mkpath(y.encode('utf8'))
+            x = x.encode('utf8')
         with open(x, 'wb') as f:
             copyfileobj(dump, f)
         del dump
@@ -716,7 +725,7 @@ def dialog (info):
 def _get_albumcover (album,  artist):
     p = None
     coverurl = 'http://www.theaudiodb.com/api/v1/json/1/searchalbum.php?s={0}&a={1}'.format(artist, album).replace(' ', '%20')
-    __log (coverurl)
+#    __log (coverurl)
     try:
         f = urllib2.urlopen(coverurl)
     except:
@@ -729,9 +738,9 @@ def _get_albumcover (album,  artist):
         except:
             pass
         else:
-            __log (parsed_json)
+#            __log (parsed_json)
             if parsed_json['album']:
-                __log (parsed_json['album'][0]['strAlbumThumb'])
+#                __log (parsed_json['album'][0]['strAlbumThumb'])
                 p = parsed_json['album'][0]['strAlbumThumb']
     return (p)
 
@@ -739,7 +748,7 @@ def get_albumdata (album,  artist):
     p = None
 #    if extra_info == 'true':
     coverurl = 'http://www.theaudiodb.com/api/v1/json/1/searchalbum.php?s={0}&a={1}'.format(artist, album).replace(' ', '%20')
-    __log (coverurl)
+#    __log (coverurl)
     try:
         f = urllib2.urlopen(coverurl)
     except:
@@ -752,7 +761,7 @@ def get_albumdata (album,  artist):
         except:
             pass
         else:
-            __log (parsed_json)
+#            __log (parsed_json)
             if parsed_json['album']:
 #                __log (parsed_json['album'][0]['strAlbumThumb'])
                 p = parsed_json['album'][0]
@@ -761,7 +770,7 @@ def get_albumdata (album,  artist):
 def get_albumdata_by_Name (album):
     p = None
     coverurl = 'http://www.theaudiodb.com/api/v1/json/1/searchalbum.php?a={0}'.format(album).replace(' ', '%20')
-    __log (coverurl)
+#    __log (coverurl)
     try:
         f = urllib2.urlopen(coverurl)
     except:
@@ -774,7 +783,7 @@ def get_albumdata_by_Name (album):
         except:
             pass
         else:
-            __log (parsed_json)
+#            __log (parsed_json)
             if parsed_json['album']:
                 p = parsed_json['album']
     return (p)
@@ -782,7 +791,7 @@ def get_albumdata_by_Name (album):
 def get_albumdata_id (id):
     p = None
     coverurl = 'http://www.theaudiodb.com/api/v1/json/1/album.php?m={0}'.format(id)
-    __log (coverurl)
+#    __log (coverurl)
     try:
         f = urllib2.urlopen(coverurl)
     except:
@@ -795,7 +804,7 @@ def get_albumdata_id (id):
         except:
             pass
         else:
-            __log (parsed_json)
+#            __log (parsed_json)
             if parsed_json['album']:
 #                __log (parsed_json['album'][0]['strAlbumThumb'])
                 p = parsed_json['album'][0]
@@ -805,7 +814,7 @@ def get_trackdata (artist,  track):
     p = None
 #    if extra_info == 'true':
     coverurl = 'http://www.theaudiodb.com/api/v1/json/1/searchtrack.php?s={0}&t={1}'.format(artist, track).replace(' ', '%20')
-    __log (coverurl)
+#    __log (coverurl)
     try:
         f = urllib2.urlopen(coverurl)
     except:
@@ -818,7 +827,7 @@ def get_trackdata (artist,  track):
         except:
             pass
         else:
-            __log (parsed_json)
+#            __log (parsed_json)
             if parsed_json['track']:
 #                __log (parsed_json['album'][0]['strAlbumThumb'])
                 p = parsed_json['track'][0]
@@ -828,7 +837,7 @@ def get_artistdata (artist):
     p = None
 #    if extra_info == 'true':
     coverurl = 'http://www.theaudiodb.com/api/v1/json/1/search.php?s={0}'.format(artist).replace(' ', '%20')
-    __log (coverurl)
+#    __log (coverurl)
     try:
         f = urllib2.urlopen(coverurl)
     except:
@@ -841,7 +850,7 @@ def get_artistdata (artist):
         except:
             pass
         else:
-            __log (parsed_json)
+#            __log (parsed_json)
             if parsed_json['artists']:
 #                __log (parsed_json['album'][0]['strAlbumThumb'])
                 p = parsed_json['artists'][0]
@@ -851,7 +860,7 @@ def _get_trackcover (artist,  song):
     p = None
 #    if extra_info == 'true':
     coverurl = 'http://www.theaudiodb.com/api/v1/json/1/searchtrack.php?s={0}&t={1}'.format(artist, song).replace(' ', '%20')
-    __log (coverurl)
+#    __log (coverurl)
     try:
         f = urllib2.urlopen(coverurl)
     except:
@@ -864,9 +873,9 @@ def _get_trackcover (artist,  song):
         except:
             pass
         else:
-            __log (parsed_json)
+#            __log (parsed_json)
             if parsed_json['track']:
-                __log (parsed_json['track'][0]['strTrackThumb'])
+#                __log (parsed_json['track'][0]['strTrackThumb'])
                 p = parsed_json['track'][0]['strTrackThumb']
     return (p)
 
@@ -888,7 +897,7 @@ def _get_album_title ( albenurl ):
     Titles = regex_get_all ( content, '<div class="item', ' </div>' )
     for i in Titles:
         infoAnker = regex_get_all( i, '<a href="', '</a>', excluding=False )
-        __log ('InfoAnker : {0}'.format(infoAnker[3]))
+#        __log ('InfoAnker : {0}'.format(infoAnker[3]))
         number = regex_from_to( i,'<div class="number">','</div>')
         number = '00'[ len ( number):] + number
         AlbumData['tracks'].append({
@@ -972,14 +981,17 @@ def mp3_tags(fname, artist, year, album, no, tracks, title, genre, comment):
         audio = ID3(fname)
     except ID3NoHeaderError:
         audio = ID3()
-    audio.add(TPE1(encoding=3, text=artist))   # Artist Name
-    audio.add(TMCL(encoding=3, text=artist))   # Performer
-    audio.add(TCON(encoding=3, text=genre))    # Genre
+    audio.add(TPE1(encoding=3, text=artist.decode('utf8')))   # Artist Name
+    audio.add(TMCL(encoding=3, text=artist.decode('utf8')))   # Performer
+    audio.add(TCON(encoding=3, text=genre.decode('utf8')))    # Genre
     audio.add(TYER(encoding=3, text=year))   # Year
-    audio.add(TALB(encoding=3, text=album))   # Album Name
-    audio.add(TRCK(encoding=3, text=unicode(no, 'utf8')))    # Tracknumber
-    audio.add(TIT2(encoding=3, text=unicode(title, 'utf8')))    # Titel 
-    audio.add(COMM(encoding=3, text=unicode(comment, 'utf8')))    # Comment
+    audio.add(TALB(encoding=3, text=album.decode('utf8')))   # Album Name
+    audio.add(TRCK(encoding=3, text=no))    # Tracknumber
+#    audio.add(TRCK(encoding=3, text=unicode(no, 'utf8')))    # Tracknumber
+    audio.add(TIT2(encoding=3, text=title.decode('utf8')))    # Titel 
+#    audio.add(TIT2(encoding=3, text=unicode(title, 'utf8')))    # Titel 
+    audio.add(COMM(encoding=3, text=comment.decode('utf8')))    # Comment
+#    audio.add(COMM(encoding=3, text=unicode(comment, 'utf8')))    # Comment
     audio.save(fname,v2_version=3)
 
 def write_mp3Tag (fname, artist, year, album, no, tracks, title, genre, comment):
@@ -988,13 +1000,20 @@ def write_mp3Tag (fname, artist, year, album, no, tracks, title, genre, comment)
         audio = EasyID3(fname)
     except ID3NoHeaderError:
         audio = EasyID3()
-    audio['title'] = unicode(title, 'utf8')
-    audio['album']= unicode(album, 'utf8')
-    audio['artist'] = unicode(artist, 'utf8')
-    audio['performer'] = unicode(artist, 'utf8')
-    audio['genre'] = unicode(genre, 'utf8')
-    audio['date'] = unicode(year, 'utf8')
-    audio['tracknumber'] = unicode(no, 'utf8')
+#    audio['title'] = unicode(title, 'utf8')
+#    audio['album']= unicode(album, 'utf8')
+#    audio['artist'] = unicode(artist, 'utf8')
+#    audio['performer'] = unicode(artist, 'utf8')
+#    audio['genre'] = unicode(genre, 'utf8')
+#    audio['date'] = unicode(year, 'utf8')
+#    audio['tracknumber'] = unicode(no, 'utf8')
+    audio['title'] = title.decode('utf8')
+    audio['album']= album.decode('utf8')
+    audio['artist'] = artist.decode('utf8')
+    audio['performer'] = artist.decode('utf8')
+    audio['genre'] = genre.decode('utf8')
+    audio['date'] = year.decode('utf8')
+    audio['tracknumber'] = no.decode('utf8')
     audio.save(fname,v2_version=3)
 
 def get_cached(func, *args, **kwargs):
@@ -1007,7 +1026,7 @@ def get_cached(func, *args, **kwargs):
 
 def _(string_id):
     if string_id in STRINGS:
-        return plugin.get_string(STRINGS[string_id])
+        return plugin.get_string(STRINGS[string_id]).encode('utf8')
     else:
         __log('String is missing: %s' % string_id)
         return string_id
@@ -1018,5 +1037,5 @@ if __name__ == '__main__':
     else:
         dst = os.path.expanduser('~/music/')
     if not extra_info: plugin.clear_function_cache()
-    __log ('sort metoden : {0}'.format(dir(xbmcswift2.SortMethod)))
+#    __log ('sort metoden : {0}'.format(dir(xbmcswift2.SortMethod)))
     plugin.run()
