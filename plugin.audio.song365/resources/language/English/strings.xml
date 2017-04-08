@@ -32,5 +32,10 @@
   <string id="30041">Get Data...</string>
   <string id="30042">Get Track Data</string>
   <string id="30043">Artist : {0}</string>
+
+  <string id="30100">Main URL of Song365.cc</string>
+  <string id="30101">Use costum directory</string>
+  <string id="30102">Download directory :</string>
+  <string id="30103">Use Extra Info from theaudiodb.com</string>
   
 </strings>
