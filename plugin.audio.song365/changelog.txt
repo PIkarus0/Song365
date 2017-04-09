@@ -8,4 +8,7 @@
     - correct Downloadstrings, now support for  
 1.0.13c (08.04.2017)
     - Erweiterten Zeichensatz beim download bereinigt und unter Windows und Linux getestet. Sowohl Umlaute als auch Akut usw. werden nun korrekt interpretiert. 
+1.0.13d (09.04.2017)
+    - Erweiterten Zeichensatz bei Suche nach Titel bereinigt und unter Windows und Linux getestet. Sowohl Umlaute als auch Akut usw. werden nun korrekt interpretiert. 
+    - Fehler beim öffnen der Base Url abgefangen.
 

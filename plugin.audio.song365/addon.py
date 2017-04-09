@@ -67,14 +67,14 @@ def index():
     )
     return items
 
-@plugin.route('/input/<label>', name='input_artist',  options={'label': 'artist'})
-@plugin.route('/input/<label>', name='input_track',  options={'label': 'track'})
-@plugin.route('/input/<label>', name='input_albumtrack',  options={'label': 'albumtrack'})
-@plugin.route('/input/<label>', name='input_album',  options={'label': 'album'})
+@plugin.route('/input/<label>', name='input_artist',  options={'label': u'artist'})
+@plugin.route('/input/<label>', name='input_track',  options={'label': u'track'})
+@plugin.route('/input/<label>', name='input_albumtrack',  options={'label': u'albumtrack'})
+@plugin.route('/input/<label>', name='input_album',  options={'label': u'album'})
 def input (label) :
-    if label == 'artist' :
+    if label == u'artist' :
         t1 = _('input1')
-    elif label == 'album' :
+    elif label == u'album' :
         t1 = _('input2')
     else :
         t1 = _('input3')
@@ -85,16 +85,16 @@ def input (label) :
         u = plugin.url_for(endpoint = ep, search_string = query)
         plugin.redirect( u )
 
-@plugin.route('/search/<label>/<search_string>',  name='search_artist_result', options={'label' : 'artist'})
-@plugin.route('/search/<label>/<search_string>',  name='search_track_result', options={'label' : 'track'})
-@plugin.route('/search/<label>/<search_string>',  name='search_albumtrack_result', options={'label' : 'albumtrack'})
-@plugin.route('/search/<label>/<search_string>',  name='search_album_result', options={'label' : 'album'})
+@plugin.route('/search/<label>/<search_string>',  name='search_artist_result', options={'label' : u'artist'})
+@plugin.route('/search/<label>/<search_string>',  name='search_track_result', options={'label' : u'track'})
+@plugin.route('/search/<label>/<search_string>',  name='search_albumtrack_result', options={'label' : u'albumtrack'})
+@plugin.route('/search/<label>/<search_string>',  name='search_album_result', options={'label' : u'album'})
 def search_result ( label, search_string ):
-    if label == 'artist' :
+    if label == u'artist' :
         items = get_search_artist(search_string)
-    elif label == 'track' :
+    elif label == u'track' :
         items = get_search_track(search_string)
-    elif label == 'albumtrack' :
+    elif label == u'albumtrack' :
         items = get_search_albumtrack(search_string)
     else :
         items = get_search_album(search_string)
@@ -512,16 +512,14 @@ def get_search_track ( search_string ) :
     items = []
     for i in List:
         infoAnker = regex_get_all(i,'<a href="', '</a>', excluding=False)
-        infoArtist = del_em(regex_from_to(infoAnker[1], '<a href=".*">', '</a>')).strip() 
-        infoSong = del_em(regex_from_to(infoAnker[0], '<a href=".*">', '</a>')).strip() 
-        infoAlbum = del_em(regex_from_to(infoAnker[2], '<a href=".*">', '</a>')).strip() 
-        infoSongPath = regex_from_to(infoAnker[0], '<a href="', '"').replace ('/track', '/download')
+#        __log ('InfoAnker {0}'.format(infoAnker))
+        infoArtist = del_em(regex_from_to(infoAnker[1], '<a href=".*">', '</a>')).strip()
+        infoSong = del_em(regex_from_to(infoAnker[0], '<a href=".*">', '</a>')).strip()
+        infoAlbum = del_em(regex_from_to(infoAnker[2], '<a href=".*">', '</a>')).strip()  
+        infoTrackPath = catch_download( url + regex_from_to(infoAnker[0], '<a href="', '"').replace ('/track', '/download') )
 
-        dstTrack = os.path.join(dst, forbidden_char(infoArtist.decode('utf8')), forbidden_char(infoAlbum.decode('utf8')))
-
-        infoTrackPath = catch_download( url + infoSongPath)
+        dstTrack = os.path.join(dst, forbidden_char(infoArtist), forbidden_char(infoAlbum))
         context_menu = []
-
         if infoTrackPath[-4:].lower() == '.mp3':
             context_menu.append(('[COLOR lime]Download Track[/COLOR]',
                 'XBMC.RunPlugin(%s)' % plugin.url_for('copy_track',
@@ -914,6 +912,7 @@ def _get_album_title ( albenurl ):
             'no' : number, 
             'path': catch_download( url + regex_from_to( infoAnker [3], '<a href="', '"' ) ),
         })
+        __log('Aus Album {0}'.format(catch_download( url + regex_from_to( infoAnker [3], '<a href="', '"' ) )))
     return (AlbumData)
     
 def __log(text):
@@ -974,15 +973,22 @@ def open_url(adr):
         'Accept-Encoding': 'none',
         'Accept-Language': 'de-DE,de;q=0.8',
         'Connection': 'keep-alive'}
-    req = urllib2.Request(adr, headers=hdr)
-    global page
+    req=None
+    content = None
     try:
-        page = urllib2.urlopen(req)
-    except urllib2.HTTPError as  e:
-        __log('url öffnen fehler : %s' %e.fp.read())
-        __log('die url lautet : %s' %adr)
-    content = page.read()
-    page.close
+        req = urllib2.Request(adr, headers=hdr)
+    except:
+        __log ('Fehler mit URL : {0}'.format(adr))
+#    global page
+    if req:
+        try:
+            page = urllib2.urlopen(req)
+        except urllib2.HTTPError as  e:
+            __log('url öffnen fehler : %s' %e.fp.read())
+            __log('die url lautet : %s' %adr)
+        else:
+            content = page.read()
+            page.close
     return content
 
 def mp3_tags(fname, artist, year, album, no, tracks, title, genre, comment):
