@@ -712,8 +712,13 @@ def copy_file (src, ziel,  fname):
         except:
             distutils.dir_util.mkpath(y.encode('utf8'))
             x = x.encode('utf8')
-        with open(x, 'wb') as f:
-            copyfileobj(dump, f)
+            __log('Convert under UNIX : {0}'.format(x))
+        try:  
+            with open(x, 'wb') as f:
+                copyfileobj(dump, f)
+        except:
+            __log('Fehler! Kann Datei nicht speichern')
+            x = None
         del dump
         c = x
     return (c)
