@@ -717,8 +717,13 @@ def copy_file (src, ziel,  fname):
             with open(x, 'wb') as f:
                 copyfileobj(dump, f)
         except:
-            __log('Fehler! Kann Datei nicht speichern')
-            x = None
+            try:
+                x = x.encode('utf8')
+                with open(x, 'wb') as f:
+                    copyfileobj(dump, f)
+            except:
+                __log('Speichern nicht moeglich : {0}')
+                x = None
         del dump
         c = x
     return (c)

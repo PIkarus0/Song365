@@ -13,3 +13,5 @@
     - Fehler beim öffnen der Base Url abgefangen.
 1.0.13e (17.04.2017)
     - Encoder Fehler (Windows/UNIX) beim speichern von Titeln abgefangen 
+1.0.13f (18.04.2017)
+    - der Fehlerteufel hat zugeschlagen - Encoder Fehler (Windows/UNIX) beim speichern von Titeln abgefangen 
